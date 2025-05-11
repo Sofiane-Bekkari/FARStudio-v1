@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="en" data-bs-theme="auto">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="generator" content="Hugo 0.118.2">
+        <title>
+            {% block head_title %}{% endblock %}
+        </title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+              crossorigin="anonymous">
+        <!--FONTAWESOME-->
+        <script src="https://kit.fontawesome.com/45f3285f50.js" crossorigin="anonymous"></script>
+    </head>
+    <!---STYLE--->
+    <!--PERSONALIZED STYLE-->
+    <style>
+        body {
+          
+          font-family: "Quicksand", sans-serif;
+        }
+        .board { height: fit-content; border-radius: 5px; display: flex; justify-content: space-between; background: #14385700; }
+        .column {width: 100%; min-height: 100px; margin: 0.5rem; padding: 1rem 1rem 5rem 1rem; border: 1px solid #2c74b3a9; border-radius: 5px; background: #14385708;}
+
+        .board-2 { height: fit-content; border-radius: 5px; display: flex; justify-content: space-between; background: #3e99c672; }
+        .column-2 {width: 100%; height: auto; margin: 0.5rem; padding: 1rem 1rem 5rem 1rem; border: 1px solid #2c74b3a9; border-radius: 5px; background: #bcdefc92;}
+
+        .column-h1 { font-weight: 600; color: #143857d5;}
+        .task { margin: 5px 0; border: 1px solid #2c74b3a9; border-radius: 5px; background-color: #fff; }
+        .task-urgent { border: 1px solid #b3372ca9; color: #fff; background-color: #fb6153; }
+        .task-completed { border: 1px solid #6ff857; color: #2c74b3dd; background-color: #A6FF96; }
+        .task-cloned { border: 1px solid #6ff857; color: #2c74b3dd; background-color: #ffff96; }
+        .titel-task { padding: 4rem; padding-bottom: 2rem;}
+        .label-rectangle { margin: 0.5rem 0; width: 400px; height: 40px; border-radius: 5px; border: 0.5px solid #2c74b3a9; display: block;}
+        .label-checkedbox {display: flex; align-items: center; justify-content: space-around;}
+        .dropdown-menu{ z-index: 999;}
+        .labels-outfit {border: solid 0.5px #2c74b35a;}
+        /*BORDER SHADOW*/
+        .box-shade-orginal { box-shadow: 0px 2px 5px #2c74b3a9;}
+        .box-shade { box-shadow: 0px 2px 10px #2c74b3a9; }
+        .box-shade2 { box-shadow: 0px 1px 2px #2c74b384; }
+        .box-shade-lable { box-shadow: 0px 1px 15px #6bfa52; }
+        .box-shade-danger { box-shadow: 0px 1px 15px #b3372ca9; }
+        /*LOGO OR BASE COLOR*/
+        .logo-color-original { color: #2c74b3a9;}
+        .logo-color-btn { color: #1c4e7ad5;}
+        .logo-color { color: #143857d5;}
+        /* Footer styles */
+        .footer {
+          width: 100%; height: 20vh ;
+          text-align: center; padding: 1rem; display: flex;
+          justify-content: center;
+          align-items: end;
+          }
+        .content {
+            min-height: calc(100vh - 50px); /* Adjust 50px to the height of your footer */
+        }
+        /* Wrapper should fill the space between header and footer */
+        .wrapper {
+            min-height: calc(100vh - 50px); /* Adjust 50px to your footer height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .box-repair {
+        border: solid 0.5px gray; border-radius: 5px; padding: 0.5rem; background: #a2a2a22a; margin: 0.1rem 0;
+        }
+        #overlayer { background: #22222280; position: absolute; width: 100%; border: solid; height: 100vh;}
+    </style>
+    <body class="min-vh-100 d-flex flex-shrink-0 flex-column">
+        <nav class="navbar navbar-expand-lg navbar-primary bg-light box-shade">
+            <div class="container container-fluid">
+              <a class="navbar-brand" href="{% url 'index' %}"><i class="fa-solid fa-microphone-lines" style="color: #143857d5;"></i> FARStudio </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            </div>
+            <div class="d-flex">
+                <div class="navbar-nav">
+                    
+                    <a class="nav-link" href="#"><i class="fa-solid fa-user-shield"></i> {{request.user.first_name}} {{request.user.last_name}}</a>
+                    
+
+                    <a class="nav-link" href="#"></a>
+                    <a class="nav-link" href="#"></a>
+                    <a class="nav-link" href="#"></a>
+                </div>
+                 
+               
+              </div>
+              
+            </div>
+        </nav>
+        {% block body %}
+            {% block content %}
+            {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                crossorigin="anonymous">
+        </script>
+    </body>
+</html>

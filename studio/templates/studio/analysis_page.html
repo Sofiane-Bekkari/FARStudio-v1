@@ -1,0 +1,97 @@
+{% extends "studio/base_layout.html" %}
+{% load static %}
+{% block title %}
+    FARStudio | AI Analysis
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-center">
+    <div class="mb-5">
+        <h1>FARStudio AI Analysis <code style="font-size: 1.5rem;">v0.0.1</code></h1>
+        <a class="btn" style="float: inline-start;" href="{% url 'index' %}"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+    </div>
+    <div class="mt-3">
+
+        <h5>FILENAME: <span style="font-weight: 500;" class="logo-color">{{filename}}</span></h5>
+        <h5>AI ANALYSIS:</h5> {{analysis}}
+        <!-- This button sends a POST request and replaces #result with the response -->
+        <button onclick="startOnAnalysis('analysis-btn')" type="button" class="mb-3 btn btn-primary"
+        hx-post="{% url 'analyze_transcript_result' filename %}"
+        hx-headers='{"X-HTMX-Intent": "analyze"}'
+        hx-target="#result"
+        id="analysis-btn"
+        hx-swap="innerHTML">
+        🤖 Analyse AI locale
+        </button>
+
+        <!-----ON AI Process----->
+        <div id="ai-processing" class="d-none">
+            <i class="fa-solid fa-circle-info"></i> Please wait the AI process until done. it may takes time...
+            <h1 class="mt-3">
+                <i class="fa-solid fa-spinner fa-spin fa-lg logo-color"></i>
+            </h1>
+        </div>
+        <div id="result"></div>
+    </div>
+</div>
+<script>
+    // GET BUTTON WHILE AI is processing
+    let btnAnalysis = document.getElementById('analysis-btn');
+    let aiOnProcessingr = document.getElementById('ai-processing');
+    let result = document.getElementById('result');
+
+    function startOnAnalysis(){
+
+        /*  GET CSRF for HTMX
+        document.body.addEventListener('htmx:configRequest', (event) => {
+          event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+          console.log('AI process start...')
+          aiOnProcessingr.classList.remove('d-none')
+          btnAnalysis.classList.add('d-none')
+        });*/
+        document.body.addEventListener('htmx:configRequest', (event) => {
+        const intent = event.detail.headers['X-HTMX-Intent'];
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+
+        if (intent === 'analyze') {
+            console.log('AI process start...');
+            aiOnProcessingr.classList.remove('d-none');
+            btnAnalysis.classList.add('d-none');
+        }
+        });
+
+    
+        /// SWAP STUFF HTMX
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            // Check if #result was the target
+            if (evt.target.id === 'result') {
+                console.log('Result div has been updated!');
+                btnAnalysis.classList.remove('d-none')
+                aiOnProcessingr.classList.add('d-none')
+                // You can now access evt.target.innerHTML or run other logic
+            }
+        });
+    }
+    /*
+        /// SAVE EDIT AI SUMMARY AS FILE
+        function saveEditedResult() {
+        const content = document.getElementById('editable-analysis').innerHTML;
+
+        console.log('CONTENT >> ' + content)
+
+        fetch('/studio/save-analysis/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ analysis: content })
+    })
+    .then(response => response.json())
+    .then(data => alert("Saved successfully!"))
+    .catch(error => alert("Error saving analysis"));
+}*/
+
+    
+</script>  
+{% endblock %}

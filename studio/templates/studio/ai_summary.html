@@ -1,0 +1,114 @@
+{% extends "studio/base_layout.html" %}
+{% load static %}
+{% block title %}
+    FARStudio | AI Summary
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-center">
+    <div class="mb-5">
+        <h1>FARStudio AI Summary<code style="font-size: 1.5rem;">v0.0.1</code></h1>
+        <a class="btn" style="float: inline-start;" href="{% url 'index' %}"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+    </div>
+    <div class="mt-3">
+
+        <h5>FILENAME: <span style="font-weight: 500;" class="logo-color">{{filename}}</span></h5>
+        <div class="mt-3" id="save-status"></div>
+
+        <div>
+            <form 
+            hx-post="{% url 'save_edited_summary' %}" 
+            hx-trigger="click from:#save-button"
+            hx-include="#edited-text, #filename"
+            hx-target="#save-status"
+            method="POST">
+            <h3> <i class="fa-solid fa-circle-check fa-lg" style="color: green;" ></i> AI Summary</h3>
+            <div id="edited-text-x" class="box-shade2" contenteditable="true" style="padding: 1.5rem; border: solid; border-radius: 5px; background: #fff;">
+            
+                <textarea oninput="autoResize(this)" class="form-control" id="edited-text" rows="1" style="overflow:hidden;" name="content">
+                   {{ai_summary_text}}
+                </textarea>
+                <!--<button id="editable-analysis" onclick="saveEditedResult()">Save</button>
+                <input type="text" name="filename" value="{{filename}}">-->
+        </div>
+
+        <input type="hidden" id="filename" name="filename" value="{{ filename }}">
+        <div>
+            <button class="btn btn-success mt-3" id="save-button">Save edited Summary <i class="fa-solid fa-floppy-disk"></i></button>
+        </div>
+        
+    </form>
+    <hr>    
+    <form class="mt-3 text-center" id="myForm" action="{% url 'generate_pdf' 3 filename %}" method="post">
+        {% csrf_token %}
+        <div style="display: flex; flex-direction: row; gap: 2rem; justify-content: center;">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioDefault" value="1" id="radioDefault1">
+                <label class="form-check-label" style="font-weight: 600;" for="radioDefault1">
+                   Template 1
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioDefault" value="2" id="radioDefault2">
+                <label class="form-check-label" style="font-weight: 600;" for="radioDefault2">
+                  Template 2
+                </label>
+            </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioDefault" value="3" id="radioDefault2">
+                <label class="form-check-label" style="font-weight: 600;" for="radioDefault2">
+                  Template 3
+                </label>
+            </div>
+            <div>
+                <a class="btn btn-primary d-none" id="pdfLink" href="#" target="_blank">Generate PDF <i class="fa-solid fa-print"></i></a>
+                <button id="btn-disable" class="btn btn-primary" disabled>Generate PDF <i class="fa-solid fa-ban"></i></button>
+            </div>
+        </div>
+    </form>
+    <!---Show information--->
+    <div class="mt-3">
+        <h6 style="color: rgb(50, 50, 50);"><i class="fa-solid fa-circle-info logo-color"></i> Please select template type before generate a PDF!</h6>
+
+    </div>
+    </div>
+</div>
+<script>
+
+    /// resize textarea
+function autoResize(textarea) {
+    textarea.style.height = 'auto';  // Reset the height
+    textarea.style.height = textarea.scrollHeight + 'px';  // Set to scroll height
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const ta = document.getElementById('edited-text');
+    autoResize(ta);  // Resize based on preloaded content
+  });
+
+  document.body.addEventListener("htmx:afterSwap", (e) => {
+    document.querySelectorAll("textarea").forEach(autoResize);
+  });
+    
+
+  /// COSTUME URL LINK
+    const link = document.getElementById("pdfLink");
+    const filename = document.getElementById("filename").value;
+    // BTN STUFF
+    const disableBtn = document.getElementById("btn-disable");
+
+
+    document.getElementById("myForm").addEventListener("change", () => {
+    const selected = document.querySelector('input[name="radioDefault"]:checked');
+    if (selected) {
+        //const filename = {{filename}};  // or dynamically fetch this too
+        disableBtn.classList.add('d-none')
+        link.classList.remove('d-none')
+        const url = `/studio/generate-pdf/${selected.value}/${filename}/`;  // adjust path as needed
+        link.href = url;
+        console.log('URL // ' + url)
+        }
+    });
+
+</script>  
+{% endblock %}

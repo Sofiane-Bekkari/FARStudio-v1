@@ -1,0 +1,66 @@
+
+<div>
+    <div>
+        <form 
+        action="{% url 'save_edited_result' %}" 
+        method="POST">
+        <!--hx-target="#save-status"-->
+        <h3> <i class="fa-solid fa-circle-check fa-lg" style="color: green;" ></i> Summary</h3>
+        <div id="edited-text-x" class="box-shade2" contenteditable="true" style="padding: 1.5rem; border: solid; border-radius: 5px; background: #fff;">
+        
+            <textarea oninput="autoResize(this)" class="form-control" id="edited-text" rows="1" style="overflow:hidden;" name="content">
+                {% for sentence in sentences %}
+                        
+                {{ sentence }}
+                
+                {% endfor %}
+            </textarea>
+            <!--<button id="editable-analysis" onclick="saveEditedResult()">Save</button>
+            <input type="text" name="filename" value="{{filename}}">-->
+    </div>
+
+    <input type="hidden" id="filename" name="filename" value="{{ filename }}">
+    <button class="btn btn-success mt-3" id="save-button">Save it as Summary file <i class="fa-solid fa-floppy-disk"></i></button>
+</form>
+ <!---Show information--->
+ <div class="mt-3">
+    <h6 style="color: rgb(50, 50, 50);"><i class="fa-solid fa-circle-info logo-color"></i> Save it if as AI summary to edit it on next step. Otherwise you can reanalys it again above.</h6>
+
+</div>
+
+    </div>
+    <script>
+         /// SAVE EDIT AI SUMMARY AS FILE
+    function saveEditedResult() {
+    const content = document.getElementById('editable-analysis').innerHTML;
+    console.log('CONTENT >> ' + content)
+        fetch('/studio/save-analysis/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ analysis: content })
+    })
+    .then(response => response.json())
+    .then(data => alert("Saved successfully!"))
+    .catch(error => alert("Error saving analysis"));
+}
+
+
+/// resize textarea
+function autoResize(textarea) {
+    textarea.style.height = 'auto';  // Reset the height
+    textarea.style.height = textarea.scrollHeight + 'px';  // Set to scroll height
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const ta = document.getElementById('edited-text');
+    autoResize(ta);  // Resize based on preloaded content
+  });
+
+  document.body.addEventListener("htmx:afterSwap", (e) => {
+    document.querySelectorAll("textarea").forEach(autoResize);
+  });
+    </script>
+</div>

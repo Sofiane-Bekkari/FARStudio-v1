@@ -1,0 +1,273 @@
+<!-- board.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <!--BOOTSTRAP CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!--FONTAWESOME-->
+    <script src="https://kit.fontawesome.com/45f3285f50.js" crossorigin="anonymous"></script>
+    <!--HTMX-->
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    <!--GOOGLE FONT-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&family=Quicksand:wght@300..700&display=swap');
+      </style>
+    <title>
+        {% block title %} {% endblock %}
+    </title>
+    <!--PERSONALIZED STYLE-->
+    <style>
+        body {
+          
+          font-family: "Quicksand", sans-serif;
+        }
+        .board { height: fit-content; border-radius: 5px; display: flex; justify-content: space-between; background: #14385700; }
+        .column {width: 100%; min-height: 100px; margin: 0.5rem; padding: 1rem 1rem 5rem 1rem; border: 1px solid #2c74b3a9; border-radius: 5px; background: #14385708;}
+
+        .board-2 { height: fit-content; border-radius: 5px; display: flex; justify-content: space-between; background: #3e99c672; }
+        .column-2 {width: 100%; height: auto; margin: 0.5rem; padding: 1rem 1rem 5rem 1rem; border: 1px solid #2c74b3a9; border-radius: 5px; background: #bcdefc92;}
+
+        .column-h1 { font-weight: 600; color: #143857d5;}
+        .task { margin: 5px 0; border: 1px solid #2c74b3a9; border-radius: 5px; background-color: #fff; }
+        .task-urgent { border: 1px solid #b3372ca9; color: #fff; background-color: #fb6153; }
+        .task-completed { border: 1px solid #6ff857; color: #2c74b3dd; background-color: #A6FF96; }
+        .task-cloned { border: 1px solid #6ff857; color: #2c74b3dd; background-color: #ffff96; }
+        .titel-task { padding: 4rem; padding-bottom: 2rem;}
+        .label-rectangle { margin: 0.5rem 0; width: 400px; height: 40px; border-radius: 5px; border: 0.5px solid #2c74b3a9; display: block;}
+        .label-checkedbox {display: flex; align-items: center; justify-content: space-around;}
+        .dropdown-menu{ z-index: 999;}
+        .labels-outfit {border: solid 0.5px #2c74b35a;}
+        /*BORDER SHADOW*/
+        .box-shade-orginal { box-shadow: 0px 2px 5px #2c74b3a9;}
+        .box-shade { box-shadow: 0px 2px 10px #2c74b3a9; }
+        .box-shade2 { box-shadow: 0px 1px 2px #2c74b384; }
+        .box-shade-lable { box-shadow: 0px 1px 15px #6bfa52; }
+        .box-shade-danger { box-shadow: 0px 1px 15px #b3372ca9; }
+        /*LOGO OR BASE COLOR*/
+        .logo-color-original { color: #2c74b3a9;}
+        .logo-color-btn { color: #1c4e7ad5;}
+        .logo-color { color: #143857d5;}
+        /* Footer styles */
+        .footer {
+          width: 100%; height: 20vh ;
+          text-align: center; padding: 1rem; display: flex;
+          justify-content: center;
+          align-items: end;
+          }
+        .content {
+            min-height: calc(100vh - 50px); /* Adjust 50px to the height of your footer */
+        }
+        /* Wrapper should fill the space between header and footer */
+        .wrapper {
+            min-height: calc(100vh - 50px); /* Adjust 50px to your footer height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .box-repair {
+        border: solid 0.5px gray; border-radius: 5px; padding: 0.5rem; background: #a2a2a22a; margin: 0.1rem 0;
+        }
+        #overlayer { background: #22222280; position: absolute; width: 100%; border: solid; height: 100vh;}
+    </style>
+</head>
+<body class="bg-success bg-opacity-50"> <!--bg-success-subtle & bg-opacity-25-->
+    <nav class="navbar navbar-expand-lg navbar-primary bg-light box-shade">
+        <div class="container container-fluid">
+          <!----OFFCANVAS TEST---->
+          <!----test main menu on LOGO with HOVER TEST---->
+          <a class="btn btn-outline-primary offcanvas-trigger" role="button" aria-controls="offcanvasExample">
+            <i class="fa-solid fa-microphone-lines"></i> FARStudio
+          </a> 
+          <!----
+          <a class="navbar-brand logo-color" href="{% url 'index' %}"><i class="fa-solid fa-message"></i> FARStudio </a>
+          -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        </div>
+        <div class="d-flex">
+            <div class="navbar-nav">
+                
+                <a class="nav-link logo-color" href="#"><i class="fa-solid fa-circle-user fa-lg"></i> {{request.user.first_name}} {{request.user.last_name}}</a>
+                
+                <a class="nav-link" href="#"></a>
+                <a class="nav-link" href="#"></a>
+                <a class="nav-link" href="#"></a>
+            </div>
+             
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Logout <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+          
+        </div>
+    </nav>
+    <!--MESSAGE ALERT-->
+    {% if messages %}
+        <div class="container">
+            {% for message in messages %}
+            {% if message.tags != "danger" %}
+                <div style="background: rgba(82, 244, 131, 0.832); color: #ffffff;" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span><i class="fa-solid fa-circle-check"></i> {{ message }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% else %}
+                <div style="background: rgba(244, 82, 82, 0.832); color: #ffffff;" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span><i class="fa-solid fa-triangle-exclamation"></i> {{ message }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+  
+    <!----OFFCANVAS---->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <!--
+                <h5 class="offcanvas-title logo-color" id="offcanvasExampleLabel">
+                    <i class="fa-solid fa-message"></i> FARStudio
+                </h5>
+               
+            </div>
+            <hr>
+            <div class="offcanvas-body">
+                <ul class="list-group" style="list-style-type: none;">
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-border-top-left"></i> FARBoard
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-solid fa-border-all"></i> KANBoard
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-people-group"></i> Liste client
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-diagram-next"></i> Tiroir
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-screwdriver-wrench"></i> Statistiques
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-calendar-days"></i> Calendrier
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-file-half-dashed"></i> Audit
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a style="text-decoration: none; font-size: 1.1rem;" href="">
+                            <i class="fa-solid fa-comments"></i> FARChat
+                        </a>
+                    </li>
+                </ul>
+                
+                <a class="mt-5 btn btn-outline-success" href="">
+                    <i class="fa-solid fa-network-wired"></i> Bascule rapide à FARServices 
+                    <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+                </a>
+                -->
+            </div>
+    </div>
+  
+    <!--MODAL LOGOUT-->
+  
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Logout?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Vous voulez sur de quit? 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Non</button>
+            <a class="btn btn-danger" href="{% url 'account_logout' %}">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--CONTENT PAGE-->
+    {% block body %}
+    {% endblock %}
+    <footer class="footer mt-5">
+        <div class="logo-color" style="font-size: 0.9em; font-weight: 400;">Copyright <span id="year"></span> &copy; FARTeam. Tous droits réservés</div>
+    </footer>
+    <!--POOPING JS-->
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.11"></script>
+    <!--BOOTSTRAP JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!--AJAX JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!----SCRIPT OFFCANVAS ON HOVER---->
+    <script>
+        /// GET YEAR
+        const now = new Date();
+        const year = now.getFullYear();   // Current year
+        document.getElementById("year").innerHTML = year;
+
+        
+      document.addEventListener("DOMContentLoaded", function () {
+          const trigger = document.querySelector('.offcanvas-trigger');
+          const offcanvas = document.querySelector('#offcanvasExample');
+  
+          // Show the offcanvas on hover
+          trigger.addEventListener('mouseenter', function () {
+              offcanvas.classList.add('show');
+              offcanvas.style.visibility = 'visible'; // Ensure visibility
+              offcanvas.style.transform = 'translateX(0)'; // Apply the visible transform
+          });
+  
+          // Hide the offcanvas when mouse leaves
+          offcanvas.addEventListener('mouseleave', function () {
+              offcanvas.classList.remove('show');
+              offcanvas.style.visibility = 'hidden'; // Reset visibility
+              offcanvas.style.transform = ''; // Reset transform
+          });
+      });
+  </script>
+  <!----TIME TRANSITION---->
+  <style>
+    .offcanvas {
+        transition: visibility 0.5s, transform 0.5s ease-in-out;
+    }
+    .offcanvas.show {
+        visibility: visible;
+        transform: translateX(0);
+    }
+  </style>
+</body>
+</html>
