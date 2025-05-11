@@ -44,13 +44,13 @@ def index(request):
         files = os.listdir(upload_dir)
         webm_files = [f for f in files if f.endswith('.webm')]
 
-    for webm in webm_files:
-        # SETP 1 RECORD
-        base_name = os.path.splitext(webm)[0]
-        # SETP 2 TRANSCRIPT
-        txt_name = base_name + '.txt'
-        # SETP 3 AI SUMMARY
-        edited_txt_name = base_name + '_ai_summary.txt'
+        for webm in webm_files:
+            # SETP 1 RECORD
+            base_name = os.path.splitext(webm)[0]
+            # SETP 2 TRANSCRIPT
+            txt_name = base_name + '.txt'
+            # SETP 3 AI SUMMARY
+            edited_txt_name = base_name + '_ai_summary.txt'
 
         matched_files.append({
             'audio': media_url + webm,
