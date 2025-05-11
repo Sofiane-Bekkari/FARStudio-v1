@@ -52,11 +52,11 @@ def index(request):
             # SETP 3 AI SUMMARY
             edited_txt_name = base_name + '_ai_summary.txt'
 
-        matched_files.append({
-            'audio': media_url + webm,
-            'transcript': media_url + txt_name if txt_name in files else None,
-            'ai_summary': media_url + edited_txt_name if edited_txt_name in files else None,
-        })
+            matched_files.append({
+                'audio': media_url + webm,
+                'transcript': media_url + txt_name if txt_name in files else None,
+                'ai_summary': media_url + edited_txt_name if edited_txt_name in files else None,
+            })
 
     print(f'MATCHED FILE >>> {matched_files}')
 
