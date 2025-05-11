@@ -153,13 +153,18 @@ STATIC_URL = 'static/'
 #STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic
 STATICFILES_DIRS = [BASE_DIR / 'static']  # Your custom static folder (optional)
-"""
-
 # NOTE STATIC NEW STUFF TO TEST
 STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'static' #staticfile
+"""
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # if you have custom static content
+STATIC_ROOT = BASE_DIR / 'staticfiles'    # for production use, served by Nginx
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # NOTE ADD A MEDIA FILES
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
