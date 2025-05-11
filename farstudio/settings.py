@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-     # NOTE WHITENOISE
-    'whitenoise.runserver_nostatic',
+    # NOTE WHITENOISE
+    # 'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 ]
 
@@ -146,18 +146,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-"""
-STATIC_URL = 'static/'
-# settings.py
-
-#STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Your custom static folder (optional)
-# NOTE STATIC NEW STUFF TO TEST
-STATIC_URL = '/static/'
-
-STATIC_ROOT = BASE_DIR / 'static' #staticfile
-"""
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # if you have custom static content
