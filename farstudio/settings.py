@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,12 +46,16 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+     # NOTE WHITENOISE
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+     # NOTE WHITENOISE test
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,12 +146,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+"""
 STATIC_URL = 'static/'
 # settings.py
 
 #STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic
 STATICFILES_DIRS = [BASE_DIR / 'static']  # Your custom static folder (optional)
+"""
+
+# NOTE STATIC NEW STUFF TO TEST
+STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / 'static' #staticfile
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# NOTE ADD A MEDIA FILES
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 
 
 # Default primary key field type
