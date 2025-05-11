@@ -13,7 +13,7 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'farstudio.settings')
 
-from farstudio.farstudio.settings import BASE_DIR
+from farstudio.settings import BASE_DIR
 from whitenoise import WhiteNoise
 
 application = get_wsgi_application()
