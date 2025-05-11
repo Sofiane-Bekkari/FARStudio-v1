@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['2.9.198.191','localhost','127.0.0.1','tickets.farlinks.com']
 # SITE 
 SITE_ID = 1
 
+# NOTE HTTPS
+CSRF_TRUSTED_ORIGINS = ['https://tickets.farlinks.com']
 
 # Application definition
 
