@@ -166,10 +166,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'    # for production use, served by Nginx
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-# NOTE ADD A MEDIA FILES
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
 
 
 # Default primary key field type
