@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-az=vt=k6q2+8@$m*2rs9ff!=!4q)k#!0l(h+0ul908rtev6)ee
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['2.9.198.191']
+ALLOWED_HOSTS = ['2.9.198.191','localhost','127.0.0.1']
 
 # SITE 
 SITE_ID = 1
@@ -53,9 +53,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
      # NOTE WHITENOISE test
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
