@@ -13,6 +13,9 @@ urlpatterns = [
     path('transcript/<str:filename>/', views.transcript_audio_view, name='transcript_audio'),
     path('analyze-page/<str:filename>/', views.analyze_transcript_view, name='analyze_transcript_page'),
     path('analyze-result/<str:filename>/', views.analyze_transcript_process, name='analyze_transcript_result'),
+    # NOTE SHOW TRANSCRIPT 
+    path('show-transcript/<str:filename>/', views.show_transcript, name='show_transcript'),
+
     # NOTE save AI editable Analysis
     path('save-analysis/', views.save_edited_result, name='save_edited_result'),
     # NOTE save AI editable summary

@@ -64,21 +64,21 @@
                             </td>
                             <td>
                                 {% if item.transcript %}
-                                    <a href="{{ item.transcript }}" target="_blank">View Transcript</a>
+                                    <a class="btn btn-primary" href="{% url 'show_transcript' item.transcript|cut:"/media/uploads/" %}" target="_blank">View Transcript <i class="fa-solid fa-file-lines"></i></a>
                                 {% else %}
                                     <em>No transcript found</em>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if item.transcript %}
-                                    <a href="{% url 'analyze_transcript_page' item.transcript|cut:"/media/uploads/" %}" target="_blank">AI Transcript</a>
+                                    <a class="btn btn-primary" href="{% url 'analyze_transcript_page' item.transcript|cut:"/media/uploads/" %}" target="_blank">Analyze Transcript <i class="fa-solid fa-robot"></i></a>
                                 {% else %}
                                     <em>No transcript found</em>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if item.ai_summary %}
-                                    <a href="{% url 'ai_summary' item.ai_summary|cut:"/media/uploads/" %}" target="_blank">AI Summary</a>
+                                    <a class="btn btn-outline-success" href="{% url 'ai_summary' item.ai_summary|cut:"/media/uploads/" %}" target="_blank">AI Summary <i class="fa-regular fa-circle-check"></i></a>
                                 {% else %}
                                     <em>No AI summary found</em>
                                 {% endif %}

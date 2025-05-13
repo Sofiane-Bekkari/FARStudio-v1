@@ -116,13 +116,26 @@ def transcript_audio_view(request, filename):
     with open(transcript_path, 'w', encoding='utf-8') as f:
         f.write(transcription_text)
 
-    
+    """
+    ## Older working 100%
     return JsonResponse({
         'status': 'success',
         'transcription': transcription_text,
         'transcription_url': f"{settings.MEDIA_URL}uploads/{transcript_filename}"
     })
+    """
+    # TESTING NEW
+    transcription_url = f"{settings.MEDIA_URL}uploads/{transcript_filename}"
+    return HttpResponse(transcription_url, content_type='text/plain; charset=utf-8')
 
+# SHOW THE TRANSCRIPT
+def show_transcript(request, filename):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        transcript = f.read()
+
+    return render(request, 'studio/show_origin_transcript.html', {'filename':filename,'transcript':transcript})
+    return HttpResponse(content, content_type='text/plain; charset=utf-8')
 
 # NOTE START WITH AI ANAYLSIS WITH Phi3-mini
 from django.shortcuts import render
