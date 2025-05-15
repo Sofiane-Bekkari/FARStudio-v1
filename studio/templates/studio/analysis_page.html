@@ -42,13 +42,6 @@
 
     function startOnAnalysis(){
 
-        /*  GET CSRF for HTMX
-        document.body.addEventListener('htmx:configRequest', (event) => {
-          event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-          console.log('AI process start...')
-          aiOnProcessingr.classList.remove('d-none')
-          btnAnalysis.classList.add('d-none')
-        });*/
         document.body.addEventListener('htmx:configRequest', (event) => {
         const intent = event.detail.headers['X-HTMX-Intent'];
         event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
@@ -72,26 +65,6 @@
             }
         });
     }
-    /*
-        /// SAVE EDIT AI SUMMARY AS FILE
-        function saveEditedResult() {
-        const content = document.getElementById('editable-analysis').innerHTML;
-
-        console.log('CONTENT >> ' + content)
-
-        fetch('/studio/save-analysis/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({ analysis: content })
-    })
-    .then(response => response.json())
-    .then(data => alert("Saved successfully!"))
-    .catch(error => alert("Error saving analysis"));
-}*/
-
     
 </script>  
 {% endblock %}

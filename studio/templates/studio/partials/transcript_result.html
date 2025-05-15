@@ -1,0 +1,11 @@
+<hr>
+<h5><i class="fa-solid fa-circle-check" style="color: #00c811;"></i> Transcription Terminé!</h5>
+<div class="mb-3 mt-3">
+    <a class="btn btn-success" href="{% url 'analyze_transcript_page' filename %}">Démarrer l’analyse IA</a>
+    <a class="btn btn-success" href="{% url 'show_transcript' filename %}">Voir le trascription</a>
+</div>
+<div class="container" style="padding: 1rem; border: solid; border-radius: 5px; background: #fff;">
+    <p class="logo-color" style="font-size: 1.1rem; line-height: 2rem; color: #005e00;">
+        {{transcript_text}}
+    </p>
+</div>

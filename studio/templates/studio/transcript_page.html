@@ -1,0 +1,124 @@
+{% extends "studio/base_layout.html" %}
+{% load static %}
+{% block title %}
+    FARStudio | Transcript process
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-center">
+    <div class="mb-5">
+        <h1>FARStudio Transcript process <code style="font-size: 1.5rem;">v0.0.1</code></h1>
+        <a class="btn" style="float: inline-start;" href="{% url 'index' %}"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'transcript_page' filename %}"><i class="fa-solid fa-arrows-rotate"></i> Refresh</a>
+    <div class="mt-3">
+
+        <h5>Audio: <span style="font-weight: 500;" class="logo-color">{{filename}}</span></h5>
+        <h5 id="duration">Duration de audio: <span class="logo-color">{{display_duration}}</span></h5>
+        <!--Seconds: {{seconds}} FOR SECONDS AS VALUE--->
+        <input type="text" name="val-duration" id="val-duration" value="{{seconds}}" hidden>
+        <hr>
+        <h5>Transcription traitement:</h5>
+        <!-- This button sends a POST request and replaces #result with the response -->
+        <button onclick="startOnTranscript('transcript-btn')" type="button" class="mb-3 btn btn-primary"
+        hx-post="{% url 'transcript_audio_process' filename %}"
+        hx-headers='{"X-HTMX-Intent": "analyze"}'
+        hx-target="#result"
+        id="transcript-btn"
+        hx-swap="innerHTML">
+        <i class="fa-solid fa-file-waveform"></i> Démarrer Transcription
+        </button>
+        
+        <!-----NOTE AND WARNING----->
+        <h6 class="mt-5" id="warning-note" style="color: rgb(50, 50, 50);"><i class="fa-solid fa-circle-info"></i> Veuillez si votre fichier audio dure plus de 10 minutes, le processus de transcription peut prendre plus de temps.</h6>
+        <!-----ON transcript Process----->
+        <div id="transcript-processing" class="mt-5 d-none">
+            <i class="fa-solid fa-circle-info"></i> Please wait the TRANSCRIPT process done...
+            <h1 class="mt-3">
+                <i class="fa-solid fa-gear fa-spin fa-lg logo-color"></i>
+            </h1>
+        </div>
+        <!--<button onclick="startProgressBar(30,25)">Start 10s Progress</button>-->
+
+        <!-----PROGRESS BAR----->
+        <div id="progress-container" class="mt-3 text-center d-none" style="margin: 0 auto; width: 50%; background-color: #eee; height: 20px; border-radius: 4px;">
+            <div id="progress-bar" style="width: 0%; height: 100%; background-color: #4caf50; border-radius: 4px;"></div>
+        </div>
+
+
+        <div id="result"></div>
+    </div>
+</div>
+<script>
+     // GET BUTTON WHILE AI is processing
+    let btnTranscript = document.getElementById('transcript-btn');
+    let transcriptOnProcessingr = document.getElementById('transcript-processing');
+    let warningNote = document.getElementById('warning-note');
+    /// VALUE OF Duration on seconds
+    let valDuration = document.getElementById('val-duration').value;
+    // PROGRASS BAR
+    const barContainer = document.getElementById("progress-container");
+    let result = document.getElementById('result');
+
+    function startOnTranscript(){
+
+        document.body.addEventListener('htmx:configRequest', (event) => {
+        const intent = event.detail.headers['X-HTMX-Intent'];
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+
+        if (intent === 'analyze') {
+            console.log('TRANSCRIPT process start...');
+            transcriptOnProcessingr.classList.remove('d-none');
+            barContainer.classList.remove('d-none');
+            btnTranscript.classList.add('d-none');
+            warningNote.classList.add('d-none');
+            /// START PROGRESS BAR
+            console.log('VALUE ON SECONDS WAS >> ' + typeof(valDuration))
+            // DIVID VALDuration
+            let intDuration = parseInt(valDuration)
+            if ( intDuration < 15 ) {
+                
+                averageSecond =  parseInt(valDuration) / 2
+            } else {
+
+                averageSecond =  parseInt(valDuration) / 4
+            }
+            console.log('DIVIDED >> ' + averageSecond)
+            startProgressBar(parseInt(averageSecond))
+        }
+        });
+
+    
+        /// SWAP STUFF HTMX
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            // Check if #result was the target
+            if (evt.target.id === 'result') {
+                console.log('Result div has been updated!');
+                btnTranscript.classList.remove('d-none')
+                transcriptOnProcessingr.classList.add('d-none')
+                startProgressBar(0, false)
+                barContainer.classList.add('d-none')
+                // You can now access evt.target.innerHTML or run other logic
+            }
+        });
+    }
+    /// Progress bar tested
+    function startProgressBar(durationInSeconds) {
+
+            const bar = document.getElementById("progress-bar");
+            let width = 0;
+            const intervalTime = 100; // in ms
+            const totalIntervals = (durationInSeconds * 1000) / intervalTime;
+    
+            const interval = setInterval(() => {
+            width += 100 / totalIntervals;
+            bar.style.width = `${width}%`;
+    
+            if (width >= 100) {
+                clearInterval(interval);
+            }
+            }, intervalTime);
+  }
+    
+</script>  
+{% endblock %}

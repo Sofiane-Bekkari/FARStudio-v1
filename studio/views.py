@@ -14,10 +14,10 @@ from django.conf import settings
 # TRANSCRIPT
 import whisper
 # PDF
-from weasyprint import HTML
+#from weasyprint import HTML
 from django.template.loader import render_to_string
 # OUTSIDE Script
-from transcripte_audio import tran_audio
+from audio_utility import whisper_transcript_audio, get_duration_ffprobe
 
 # Create your views here.
 def index_page(request):
@@ -74,7 +74,7 @@ def upload_audio(request):
 
         # Generate timestamp-based filename
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')  # e.g., 20250502_153045
-        print(f'THIS TIPESTAPM/ {timestamp}')
+        print(f'THIS TIMESTAPM/ {timestamp}')
         file_ext = os.path.splitext(audio_file.name)[-1] or '.webm'
         filename = f"{timestamp}{file_ext}"
 
@@ -89,7 +89,7 @@ def upload_audio(request):
         file_url = f"{settings.MEDIA_URL}uploads/{filename}"
 
         # NOTE we try to add Transcript after record  ON TEST
-        tran_audio(filename)
+        #tran_audio(filename)
 
         return JsonResponse({'status': 'success', 'url': file_url})
 
@@ -97,25 +97,40 @@ def upload_audio(request):
     return JsonResponse({'status': 'failed'}, status=400)
 
 
-# NOTE SECOND STEP TO TRANSCRIPTE AUDIO 
-def transcript_audio_view(request, filename):
+# NOTE THE TRANSCRIPT PROCESS ON SEPARATE PAGE
+def transcript_page(request, filename):
     audio_path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
 
+    # GET AUDIO DURATION
+    seconds = get_duration_ffprobe(filename)
+    minutes = int(seconds) // 60
+    remaining_seconds = int(seconds) % 60
+    display_duration = f"{minutes}m:{remaining_seconds}s"
+
+    return render(request, 'studio/transcript_page.html', {'filename':filename,
+                                                           'display_duration':display_duration,
+                                                           'seconds':seconds,})
+
+# NOTE THE MOST IMPORTANT STEP >>> NOTE TRANSCRIPT PROCESS
+def transcript_audio_process(request, filename):
+
+    # Get this filename as audio
+    audio_path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
+
+    # Check it
     if not os.path.exists(audio_path):
         return JsonResponse({'status': 'error', 'message': 'Audio file not found'}, status=404)
 
-    model = whisper.load_model("base")
-    result = model.transcribe(audio_path)
-    transcription_text = result['text']
+    # Strat the Transcript
+    transcript_text = whisper_transcript_audio(filename)
 
-    # Save the transcription as a text file
-    base_name, _ = os.path.splitext(filename)
-    transcript_filename = base_name + ".txt"
-    transcript_path = os.path.join(settings.MEDIA_ROOT, 'uploads', transcript_filename)
 
-    with open(transcript_path, 'w', encoding='utf-8') as f:
-        f.write(transcription_text)
+    print(f'Transcript process: {transcript_text}')
 
+    filename = filename.replace(".webm", ".txt")
+    print(filename)  # Output: 20250515_144204.txt
+
+    return render(request, 'studio/partials/transcript_result.html', {'filename':filename, 'transcript_text':transcript_text})
     """
     ## Older working 100%
     return JsonResponse({
@@ -124,9 +139,7 @@ def transcript_audio_view(request, filename):
         'transcription_url': f"{settings.MEDIA_URL}uploads/{transcript_filename}"
     })
     """
-    # TESTING NEW
-    transcription_url = f"{settings.MEDIA_URL}uploads/{transcript_filename}"
-    return HttpResponse(transcription_url, content_type='text/plain; charset=utf-8')
+
 
 # SHOW THE TRANSCRIPT
 def show_transcript(request, filename):
@@ -136,6 +149,46 @@ def show_transcript(request, filename):
 
     return render(request, 'studio/show_origin_transcript.html', {'filename':filename,'transcript':transcript})
     return HttpResponse(content, content_type='text/plain; charset=utf-8')
+
+# NOTE DELETING file
+def delete_file(request, filename):
+
+    
+    upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+    #media_url = settings.MEDIA_URL + 'uploads/'
+
+    if os.path.exists(upload_dir):
+        media_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+        filename = filename.replace('.webm', '')
+    file_variants = [
+        f"{filename}.webm",
+        f"{filename}.txt",
+        f"{filename}_ai_summary.txt"
+    ]
+
+    deleted_files = []
+    not_found = []
+
+    for fname in file_variants:
+        path = os.path.join(media_dir, fname)
+        if os.path.exists(path):
+            os.remove(path)
+            deleted_files.append(fname)
+        else:
+            not_found.append(fname)
+
+    # FOR TEST AS JOSN respond
+    """
+    return JsonResponse({
+        "deleted": deleted_files,
+        "not_found": not_found
+    })
+    """
+    messages.success(request, f"You have been delete this file {filename}")
+    return redirect('index')
+
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AI STAGE 
 
 # NOTE START WITH AI ANAYLSIS WITH Phi3-mini
 from django.shortcuts import render
@@ -147,11 +200,10 @@ def analyze_transcript_view(request, filename):
         transcript_text = f.read()
 
     prompt = f"Summarize the following transcript and list 5 key topics:\n\n{transcript_text}"
-    #analysis = analyze_text_with_phi3(prompt)
+    
 
     return render(request, 'studio/analysis_page.html', {
         'filename': filename,
-        #'analysis': analysis
     })
 
 def analyze_transcript_process(request, filename):

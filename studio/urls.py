@@ -10,12 +10,17 @@ urlpatterns = [
     # Record audio 
     path('upload-audio/', views.upload_audio, name='upload_audio'),
     # Transcripte-Audio url NOTE I think NOT BE ON USE
-    path('transcript/<str:filename>/', views.transcript_audio_view, name='transcript_audio'),
-    path('analyze-page/<str:filename>/', views.analyze_transcript_view, name='analyze_transcript_page'),
-    path('analyze-result/<str:filename>/', views.analyze_transcript_process, name='analyze_transcript_result'),
+    # NOTE TRANSCRIPT PAGE
+    path('transcript-page/<str:filename>/', views.transcript_page, name='transcript_page'),
+    # NOTE MAKE TRASCRIPT PROCESS
+    path('transcript-process/<str:filename>/', views.transcript_audio_process, name='transcript_audio_process'),
     # NOTE SHOW TRANSCRIPT 
     path('show-transcript/<str:filename>/', views.show_transcript, name='show_transcript'),
+    path('delete-file/<str:filename>/', views.delete_file, name='delete_file'),
 
+
+    path('analyze-page/<str:filename>/', views.analyze_transcript_view, name='analyze_transcript_page'),
+    path('analyze-result/<str:filename>/', views.analyze_transcript_process, name='analyze_transcript_result'),
     # NOTE save AI editable Analysis
     path('save-analysis/', views.save_edited_result, name='save_edited_result'),
     # NOTE save AI editable summary

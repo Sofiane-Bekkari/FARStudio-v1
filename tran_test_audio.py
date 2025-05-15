@@ -8,7 +8,7 @@ import whisper
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "farstudio.settings")  # Change to your actual project settings
 
 # Initialize Django
-django.setup()
+#django.setup()
 
 def tran_audio(filename):    
     audio_path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
@@ -31,9 +31,10 @@ def tran_audio(filename):
     transcription_url = f"{settings.MEDIA_URL}uploads/{transcript_filename}"
 
     print(f'Done transcript file: {transcription_url}')
+    print(f'Done transcript text: {transcription_text}')
 
     return transcription_url
 
 
 # NOTE TEST AND RUN
-# tran_audio('20250504_201022.webm')
+tran_audio('20250515_105750.webm')
