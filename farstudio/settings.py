@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-az=vt=k6q2+8@$m*2rs9ff!=!4q)k#!0l(h+0ul908rtev6)ee
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['2.9.198.191','localhost','127.0.0.1','tickets.farlinks.com']
+ALLOWED_HOSTS = ['2.9.199.68','2.9.198.191','localhost','127.0.0.1','tickets.farlinks.com']
 
 # SITE 
 SITE_ID = 1
