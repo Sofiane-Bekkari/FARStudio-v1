@@ -43,7 +43,8 @@ import subprocess
 import json
 
 def get_duration_ffprobe(filename):
-    file_path = 'media/uploads/' + filename
+    file_path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
+    #file_path = 'media/uploads/' + filename
     try:
         result = subprocess.run(
             [

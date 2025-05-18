@@ -41,6 +41,7 @@
         <!--<button onclick="startProgressBar(5)">Start 10s Progress</button>-->
 
         <!-----PROGRESS BAR----->
+        <div id="progress-bar-done" class="d-none">Il en a fallu plus que d'habitude !</div>
         <div id="progress-container" class="mt-3 text-center d-none" style="margin: 0 auto; width: 50%; background-color: #eee; height: 20px; border-radius: 4px;">
             <div id="progress-bar" style="width: 0%; height: 100%; background-color: #4caf50; border-radius: 4px;"></div>
         </div>
@@ -55,7 +56,10 @@
     let progressBar = document.getElementById('progress-container');
     // warning-note
     let warningNote = document.getElementById('warning-note');
+    // Seconds as duration value
     let valDuration = document.getElementById('seconds').value;
+    // Duration DONE
+    let progressDone = document.getElementById('progress-bar-done')
     let result = document.getElementById('result');
 
     function startOnAnalysis(){
@@ -98,6 +102,7 @@
                 btnAnalysis.classList.remove('d-none')
                 aiOnProcessingr.classList.add('d-none')
                 progressBar.classList.add('d-none')
+                progressDone.classList.add('d-none')
                 // You can now access evt.target.innerHTML or run other logic
             }
         });
@@ -117,6 +122,7 @@
     
             if (width >= 100) {
                 clearInterval(interval);
+                progressDone.classList.remove('d-none')
             }
             }, intervalTime);
   }
