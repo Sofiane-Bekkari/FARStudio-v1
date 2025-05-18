@@ -219,13 +219,15 @@ def analyze_transcript_view(request, filename):
             # NOTE Catch the Original Audio as webm
             if fname.endswith('.webm'):
                 print(f'Filename Exist WEBM >> {fname}')
-                audio_file = fname
+                # FIX WITH FULL PATH
+                audio_file = path
         else:
             print(f'Filename Not Exist >> {fname}')
 
     # NOTE IT SHOULD BE AUDIO WEBM file
     # GET AUDIO DURATION
-    seconds = get_duration_ffprobe(audio_file)
+    print(f'OUTPUT PATH // {audio_file}')
+    seconds = get_duration_ffprobe(audio_file) # + Media Dir
     minutes = int(seconds) // 60
     remaining_seconds = int(seconds) % 60
     display_duration = f"{minutes}m:{remaining_seconds}s"
