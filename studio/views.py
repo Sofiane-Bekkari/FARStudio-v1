@@ -195,15 +195,48 @@ from django.shortcuts import render
 from .ollama_utility import analyze_text_with_phi3
 
 def analyze_transcript_view(request, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
-    with open(path, 'r', encoding='utf-8') as f:
-        transcript_text = f.read()
-
-    prompt = f"Summarize the following transcript and list 5 key topics:\n\n{transcript_text}"
     
+    # Get the whole Media Dic
+    upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+
+    if os.path.exists(upload_dir):
+        media_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+        filename = filename.replace('.txt', '')
+
+    # Set a list 
+    file_variants = [
+        f"{filename}.webm",
+        f"{filename}.txt",
+        f"{filename}_ai_summary.txt"
+    ]
+
+    # Original Audio Empty / None
+    audio_file = None
+
+    for fname in file_variants:
+        path = os.path.join(media_dir, fname)
+        if os.path.exists(path):
+            # NOTE Catch the Original Audio as webm
+            if fname.endswith('.webm'):
+                print(f'Filename Exist WEBM >> {fname}')
+                audio_file = fname
+        else:
+            print(f'Filename Not Exist >> {fname}')
+
+    # NOTE IT SHOULD BE AUDIO WEBM file
+    # GET AUDIO DURATION
+    seconds = get_duration_ffprobe(audio_file)
+    minutes = int(seconds) // 60
+    remaining_seconds = int(seconds) % 60
+    display_duration = f"{minutes}m:{remaining_seconds}s"
+    
+    # KEEP TRACK FOR TXT file to AI analysis
+    filename_txt = filename + '.txt'
 
     return render(request, 'studio/analysis_page.html', {
-        'filename': filename,
+        'filename': filename_txt,
+        'seconds':seconds,
+        'display_duration':display_duration,
     })
 
 def analyze_transcript_process(request, filename):
