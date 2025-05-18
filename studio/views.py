@@ -102,7 +102,7 @@ def transcript_page(request, filename):
     audio_path = os.path.join(settings.MEDIA_ROOT, 'uploads', filename)
 
     # GET AUDIO DURATION
-    seconds = get_duration_ffprobe(filename)
+    seconds = get_duration_ffprobe(audio_path)
     minutes = int(seconds) // 60
     remaining_seconds = int(seconds) % 60
     display_duration = f"{minutes}m:{remaining_seconds}s"
